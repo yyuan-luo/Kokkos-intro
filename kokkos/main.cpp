@@ -2,8 +2,8 @@
 
 #include <Kokkos_Core.hpp>
 
-#define M 10000
-#define N 10000
+#define M 12500
+#define N 12500
 
 int main(int argc, char** argv) {
     Kokkos::initialize(argc, argv);
