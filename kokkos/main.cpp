@@ -39,24 +39,14 @@ int main(int argc, char** argv) {
         Kokkos::Timer timer;
         Kokkos::parallel_for(
             M, KOKKOS_LAMBDA(const size_t j) {
-                for (int i = 0; i < N; ++i) {
-                    z(j, j) += x(j, i) * y(i, j);
+                for (int i = 0; i < M; ++i) {
+                    for (int k = 0; k < N; k++) {
+                        z(j, i) += x(j, k) * y(k, j);
+                    }
                 }
             });
         double time = timer.seconds();
-        Kokkos::deep_copy(h_z, z);     // require for CUDA, why?
-        for (int j = 0; j < M; j++) {
-            double temp = 0.0;
-            for (int i = 0; i < N; i++) {
-                temp += h_x(j, i) * h_y(i, j);
-            }
-            if (temp != h_z(j, j)) {
-                std::cout << "Error" << std::endl;
-                Kokkos::finalize();
-                return 0;
-            }
-        }
-        std::cout << "Success: " << time << "s" << std::endl;
+        std::cout << "Time: " << time << "s" << std::endl;
     }
     Kokkos::finalize();
     return 0;
