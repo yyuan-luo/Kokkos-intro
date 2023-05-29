@@ -1,11 +1,25 @@
 #include <iostream>
+#include <sys/time.h>
 
 #include <Kokkos_Core.hpp>
 
-#define M 12500
-#define N 12500
+// #define M 12500
+// #define N 12500
 
 int main(int argc, char** argv) {
+    if (argc < 3) {
+        printf("./main.openmp (M=1250) (N=1250)\n");
+    }
+
+    unsigned long M = 1250;
+    unsigned long N = 1250;
+    if (argc == 3) {
+        M = atoi(argv[1]);
+        N = atoi(argv[2]);
+    }
+    unsigned long long flops_count = 2 * N * N * N;
+    struct timeval start, end;
+    gettimeofday(&start, nullptr);
     Kokkos::initialize(argc, argv);
     {
         typedef Kokkos::View<double**> ViewMatrix;
@@ -46,8 +60,14 @@ int main(int argc, char** argv) {
                 }
             });
         double time = timer.seconds();
-        std::cout << "Time: " << time << "s" << std::endl;
+        double flops = flops_count / time;
+        std::cout << "Kernel: " << time << "s" << std::endl;
+        std::cout << "FLOPS: " << flops << std::endl;
     }
     Kokkos::finalize();
+    gettimeofday(&end, nullptr);
+    double elapsedTime = (end.tv_sec - start.tv_sec) + (end.tv_usec - start.tv_usec) / 1000000.0;
+
+    std::cout << "Time: " << elapsedTime << "s" << std::endl;
     return 0;
 }
