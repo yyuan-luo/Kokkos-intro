@@ -5,6 +5,7 @@ ITERATIONS=5
 
 M=$1
 N=$2
+k=$3
 
 # first compile
 make build
@@ -16,7 +17,7 @@ times=()
 # Loop for the specified number of iterations
 for ((i = 1; i <= $ITERATIONS; i++)); do
    echo "Running iteration $i"
-   output=$(./main.openmp ${M} ${N})
+   output=$(./main.openmp ${M} ${N} ${K})
    kernel_time=$(echo "$output" | grep "Kernel" | awk '{print $2}')
    f=$(echo "$output" | grep "FLOPS" | awk '{print $2}')
    time=$(echo "$output" | grep "Time" | awk '{print $2}')
