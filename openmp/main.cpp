@@ -19,7 +19,6 @@ int main(int argc, char const* argv[]) {
         N = atoi(argv[2]);
     }
     unsigned long long flops_count = 2 * N * N * N;
-    printf("%llu\n", flops_count);
     struct timeval start, end;
     gettimeofday(&start, nullptr);
     double** matrix1 = new double*[M];
