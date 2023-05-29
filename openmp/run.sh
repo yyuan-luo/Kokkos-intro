@@ -3,8 +3,8 @@
 # Set the number of iterations
 ITERATIONS=10
 
-M=$2
-N=$3
+M=$1
+N=$2
 
 # first compile
 make build
