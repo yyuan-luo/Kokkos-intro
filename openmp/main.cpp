@@ -6,17 +6,19 @@
 #include <iostream>
 
 int main(int argc, char const* argv[]) {
-    if (argc < 3) {
-        printf("./main.openmp (M=1250) (N=1250)\n");
+    if (argc < 4 && argc > 1) {
+        printf("./main.openmp (M=1250) (N=1250) (K=1250)\n");
     }
 
     unsigned long M = 1250;
     unsigned long N = 1250;
-    if (argc == 3) {
+    unsigned long K = 1250;
+    if (argc == 4) {
         M = atoi(argv[1]);
         N = atoi(argv[2]);
+        K = atoi(argv[3]);
     }
-    unsigned long long flops_count = 2 * N * N * N;
+    unsigned long long flops_count = 2 * M * N * K;
     struct timeval start, end;
     gettimeofday(&start, nullptr);
     double** matrix1 = new double*[M];
@@ -24,14 +26,19 @@ int main(int argc, char const* argv[]) {
         matrix1[i] = new double[N];
     }
 
-    double** matrix2 = new double*[M];
-    for (int i = 0; i < M; i++) {
+    double** matrix2 = new double*[K];
+    for (int i = 0; i < K; i++) {
         matrix2[i] = new double[N];
+    }
+
+    double** matrix3 = new double*[N];
+    for (int i = 0; i < N; i++) {
+        matrix3[i] = new double[K];
     }
 
     double** result = new double*[M];
     for (int i = 0; i < M; i++) {
-        result[i] = new double[M];
+        result[i] = new double[K];
     }
 
     for (int i = 0; i < M; i++) {
@@ -39,17 +46,18 @@ int main(int argc, char const* argv[]) {
             matrix1[i][j] = static_cast<double>(rand()) / RAND_MAX;
         }
     }
-    for (int i = 0; i < M; i++) {
+    for (int i = 0; i < K; i++) {
         for (int j = 0; j < N; j++) {
             matrix2[i][j] = static_cast<double>(rand()) / RAND_MAX;
+            matrix3[j][i] = matrix2[i][j];
         }
     }
     auto kernel_start = std::chrono::high_resolution_clock::now();
 #pragma omp parallel for
     for (int i = 0; i < M; ++i) {
-        for (int j = 0; j < M; ++j) {
+        for (int j = 0; j < K; ++j) {
             double temp = 0.0;
-        #pragma omp simd reduction(+ : temp)
+// #pragma omp simd reduction(+ : temp)
             for (int k = 0; k < N; ++k) {
                 temp += matrix1[i][k] * matrix2[j][k];
             }
