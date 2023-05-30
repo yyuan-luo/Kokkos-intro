@@ -5,7 +5,7 @@ ITERATIONS=5
 
 M=$1
 N=$2
-k=$3
+K=$3
 
 # first compile
 make build

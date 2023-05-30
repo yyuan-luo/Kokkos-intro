@@ -57,7 +57,7 @@ int main(int argc, char const* argv[]) {
     for (int i = 0; i < M; ++i) {
         for (int j = 0; j < K; ++j) {
             double temp = 0.0;
-// #pragma omp simd reduction(+ : temp)
+        #pragma omp simd reduction(+ : temp)
             for (int k = 0; k < N; ++k) {
                 temp += matrix1[i][k] * matrix2[j][k];
             }
