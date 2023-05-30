@@ -1,10 +1,9 @@
-#include <iostream>
 #include <sys/time.h>
 #include <cstdlib>
 #include <ctime>
+#include <iostream>
 
 #include <Kokkos_Core.hpp>
-
 
 int main(int argc, char** argv) {
     if (argc < 4 && argc > 1) {
@@ -24,7 +23,7 @@ int main(int argc, char** argv) {
     gettimeofday(&start, nullptr);
     Kokkos::initialize(argc, argv);
     {
-        typedef Kokkos::View<double**> ViewMatrix;
+        typedef Kokkos::View<double**, Kokkos::LayoutRight> ViewMatrix;
 
         ViewMatrix x("x", M, N);
         ViewMatrix y("y", N, K);
@@ -34,33 +33,42 @@ int main(int argc, char** argv) {
         ViewMatrix::HostMirror h_y = Kokkos::create_mirror_view(y);
         ViewMatrix::HostMirror h_z = Kokkos::create_mirror_view(z);
 
-        for (int j = 0; j < N; j++) {
-            for (int i = 0; i < M; i++) {
-                h_x(j, i) = static_cast<double>(rand()) / RAND_MAX;
-            }
-        }
-        for (int j = 0; j < N; j++) {
-            for (int i = 0; i < K; i++) {
-                h_y(j, i) = static_cast<double>(rand()) / RAND_MAX;
-            }
-        }
-        for (int j = 0; j < M; j++) {
-            for (int i = 0; i < K; i++) {
-                h_z(j, i) = 0.0;
-            }
-        }
+        Kokkos::parallel_for(
+            "InitX", Kokkos::RangePolicy<>(0, N), KOKKOS_LAMBDA(int j) {
+                for (int i = 0; i < M; i++) {
+                    x(i, j) = static_cast<double>(rand()) / RAND_MAX;
+                }
+            });
+
+        Kokkos::parallel_for(
+            "InitY", Kokkos::RangePolicy<>(0, N), KOKKOS_LAMBDA(int j) {
+                for (int i = 0; i < K; i++) {
+                    y(j, i) = static_cast<double>(rand()) / RAND_MAX;
+                }
+            });
+
+        Kokkos::parallel_for(
+            "InitZ", Kokkos::RangePolicy<>(0, M), KOKKOS_LAMBDA(int j) {
+                for (int i = 0; i < K; i++) {
+                    z(j, i) = 0.0;
+                }
+            });
+
         Kokkos::deep_copy(y, h_y);
         Kokkos::deep_copy(x, h_x);
         Kokkos::deep_copy(z, h_z);
+
         Kokkos::Timer timer;
         Kokkos::parallel_for(
-            M, KOKKOS_LAMBDA(const size_t j) {
-                for (int i = 0; i < M; ++i) {
+            "MatrixMultiply", Kokkos::TeamPolicy<>(M, Kokkos::AUTO), KOKKOS_LAMBDA(const Kokkos::TeamPolicy<>::member_type& teamMember) {
+                const int j = teamMember.league_rank();
+                Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, M), [=](const int i) {
                     for (int k = 0; k < K; k++) {
-                        z(j, i) += x(j, k) * y(k, j);
+                        Kokkos::atomic_add(&z(i, k), x(i, j) * y(j, k));
                     }
-                }
+                });
             });
+
         double time = timer.seconds();
         double flops = flops_count / time;
         std::cout << "Kernel: " << time << "s" << std::endl;
