@@ -31,11 +31,6 @@ int main(int argc, char const* argv[]) {
         matrix2[i] = new double[N];
     }
 
-    double** matrix3 = new double*[N];
-    for (int i = 0; i < N; i++) {
-        matrix3[i] = new double[K];
-    }
-
     double** result = new double*[M];
     for (int i = 0; i < M; i++) {
         result[i] = new double[K];
@@ -49,7 +44,6 @@ int main(int argc, char const* argv[]) {
     for (int i = 0; i < K; i++) {
         for (int j = 0; j < N; j++) {
             matrix2[i][j] = static_cast<double>(rand()) / RAND_MAX;
-            matrix3[j][i] = matrix2[i][j];
         }
     }
     auto kernel_start = std::chrono::high_resolution_clock::now();

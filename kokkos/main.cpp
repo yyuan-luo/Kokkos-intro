@@ -1,23 +1,25 @@
 #include <iostream>
 #include <sys/time.h>
+#include <cstdlib>
+#include <ctime>
 
 #include <Kokkos_Core.hpp>
 
-// #define M 12500
-// #define N 12500
 
 int main(int argc, char** argv) {
-    if (argc < 3) {
+    if (argc < 4 && argc > 1) {
         printf("./main.openmp (M=1250) (N=1250)\n");
     }
 
     unsigned long M = 1250;
     unsigned long N = 1250;
-    if (argc == 3) {
+    unsigned long K = 1250;
+    if (argc == 4) {
         M = atoi(argv[1]);
         N = atoi(argv[2]);
+        K = atoi(argv[3]);
     }
-    unsigned long long flops_count = 2 * N * N * N;
+    unsigned long long flops_count = 2 * M * N * K;
     struct timeval start, end;
     gettimeofday(&start, nullptr);
     Kokkos::initialize(argc, argv);
@@ -25,8 +27,8 @@ int main(int argc, char** argv) {
         typedef Kokkos::View<double**> ViewMatrix;
 
         ViewMatrix x("x", M, N);
-        ViewMatrix y("y", N, M);
-        ViewMatrix z("z", M, M);
+        ViewMatrix y("y", N, K);
+        ViewMatrix z("z", M, K);
 
         ViewMatrix::HostMirror h_x = Kokkos::create_mirror_view(x);
         ViewMatrix::HostMirror h_y = Kokkos::create_mirror_view(y);
@@ -34,16 +36,16 @@ int main(int argc, char** argv) {
 
         for (int j = 0; j < N; j++) {
             for (int i = 0; i < M; i++) {
-                h_x(j, i) = 1.0;
+                h_x(j, i) = static_cast<double>(rand()) / RAND_MAX;
+            }
+        }
+        for (int j = 0; j < N; j++) {
+            for (int i = 0; i < K; i++) {
+                h_y(j, i) = static_cast<double>(rand()) / RAND_MAX;
             }
         }
         for (int j = 0; j < M; j++) {
-            for (int i = 0; i < N; i++) {
-                h_y(j, i) = 2.0;
-            }
-        }
-        for (int j = 0; j < M; j++) {
-            for (int i = 0; i < M; i++) {
+            for (int i = 0; i < K; i++) {
                 h_z(j, i) = 0.0;
             }
         }
@@ -54,7 +56,7 @@ int main(int argc, char** argv) {
         Kokkos::parallel_for(
             M, KOKKOS_LAMBDA(const size_t j) {
                 for (int i = 0; i < M; ++i) {
-                    for (int k = 0; k < N; k++) {
+                    for (int k = 0; k < K; k++) {
                         z(j, i) += x(j, k) * y(k, j);
                     }
                 }
