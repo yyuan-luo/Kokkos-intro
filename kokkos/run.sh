@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Set the number of iterations
-ITERATIONS=5
+ITERATIONS=10
 
 M=$2
 N=$3

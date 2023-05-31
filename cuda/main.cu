@@ -13,13 +13,6 @@ __global__ void matrixMultiplication(double* matrix1, double* matrix2, double* r
     __shared__ float Mds[BLOCK_SIZE][BLOCK_SIZE];
     __shared__ float Nds[BLOCK_SIZE][BLOCK_SIZE];
 
-    // cooperative_groups::thread_block block = cooperative_groups::this_thread_block();
-
-    // int row = block.thread_index().x * BLOCK_SIZE + block.thread_index().x;
-    // int col = block.thread_index().y * BLOCK_SIZE + block.thread_index().y;
-    // int tx = block.thread_index().x;
-    // int ty = block.thread_index().y;
-
     int row = threadIdx.x * blockIdx.x*blockDim.x;
     int col = threadIdx.y + blockIdx.y*blockDim.y;
     int tx = threadIdx.x;
@@ -30,13 +23,10 @@ __global__ void matrixMultiplication(double* matrix1, double* matrix2, double* r
         for (int i = 0; i < N / BLOCK_SIZE; ++i) {
             Mds[tx][ty] = matrix1[row * N + ty + i * BLOCK_SIZE];
             Nds[tx][ty] = matrix2[col + (tx + i * BLOCK_SIZE) * K];
-            // block.sync();
             __syncthreads();
-            for (int j = 0; j < BLOCK_SIZE / 4; j += 4) {
+            #pragma unroll
+            for (int j = 0; j < BLOCK_SIZE; j++) {
                 sum += Mds[tx][j] * Nds[j][ty];
-                sum += Mds[tx][j + 1] * Nds[j + 1][ty];
-                sum += Mds[tx][j + 2] * Nds[j + 2][ty];
-                sum += Mds[tx][j + 3] * Nds[j + 3][ty];
             }
             __syncthreads();
         }

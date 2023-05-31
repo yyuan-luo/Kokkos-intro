@@ -7,7 +7,7 @@
 
 int main(int argc, char** argv) {
     if (argc < 4 && argc > 1) {
-        printf("./main.openmp (M=1250) (N=1250)\n");
+        printf("./main.openmp (M=1250) (N=1250) (K=1250)\n");
     }
 
     unsigned long M = 1250;
