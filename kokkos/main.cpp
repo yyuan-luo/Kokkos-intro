@@ -34,8 +34,8 @@ int main(int argc, char** argv) {
         ViewMatrix::HostMirror h_z = Kokkos::create_mirror_view(z);
 
         Kokkos::parallel_for(
-            "InitX", Kokkos::RangePolicy<>(0, N), KOKKOS_LAMBDA(int j) {
-                for (int i = 0; i < M; i++) {
+            "InitX", Kokkos::RangePolicy<>(0, M), KOKKOS_LAMBDA(int j) {
+                for (int i = 0; i < N; i++) {
                     x(i, j) = static_cast<double>(rand()) / RAND_MAX;
                 }
             });
@@ -64,7 +64,7 @@ int main(int argc, char** argv) {
                 const int j = teamMember.league_rank();
                 Kokkos::parallel_for(Kokkos::TeamThreadRange(teamMember, M), [=](const int i) {
                     for (int k = 0; k < K; k++) {
-                        Kokkos::atomic_add(&z(i, k), x(i, j) * y(j, k));
+                        Kokkos::atomic_add(&z(i, k), x(i, k) * y(j, k));
                     }
                 });
             });
