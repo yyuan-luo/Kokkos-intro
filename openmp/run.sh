@@ -8,7 +8,7 @@ N=$2
 K=$3
 
 # first compile
-make build
+make build -j
 
 kernel_times=()
 flops=()

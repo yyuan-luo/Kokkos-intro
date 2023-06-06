@@ -8,7 +8,7 @@ N=$3
 K=$4
 
 # first compile
-make build KOKKOS_DEVICES=$1
+make build -j KOKKOS_DEVICES=$1
 EXE=""
 if [ "$1" = "OpenMP" ]; then
    EXE="./main.host"

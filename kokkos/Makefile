@@ -1,7 +1,7 @@
 KOKKOS_PATH = ${HOME}/kokkos
 EXE_NAME = main
 
-SRC = $(wildcard *.cpp)
+SRC = main.cpp
 
 ifneq (,$(findstring Cuda,$(KOKKOS_DEVICES)))
 CXX = ${KOKKOS_PATH}/bin/nvcc_wrapper
