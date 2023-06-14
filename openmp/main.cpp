@@ -47,11 +47,10 @@ int main(int argc, char const* argv[]) {
         }
     }
     auto kernel_start = std::chrono::high_resolution_clock::now();
-#pragma omp parallel for
+    #pragma omp parallel for collapse(2)
     for (int i = 0; i < M; ++i) {
         for (int j = 0; j < K; ++j) {
             double temp = 0.0;
-        #pragma omp simd reduction(+ : temp)
             for (int k = 0; k < N; ++k) {
                 temp += matrix1[i][k] * matrix2[j][k];
             }
