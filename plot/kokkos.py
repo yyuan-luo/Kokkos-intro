@@ -47,8 +47,6 @@ for i, change in enumerate(time_change):
         ax.annotate(f'{change:.1f}%', xy=(i + 3 * width, kokkos_cuda_op[i]), xytext=(0, 5),
                     textcoords="offset points", ha='center', va='bottom')
 
-plt.title('Performance Comparison of Kokkos On OpenMP and CUDA')
-
 plt.tight_layout()
 plt.savefig("kokkos.png")
 plt.show()
