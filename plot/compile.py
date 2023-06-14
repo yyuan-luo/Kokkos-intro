@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 labels = ['OpenMP', 'Kokkos OpenMP', 'CUDA', 'Kokkos CUDA']
-duration = [0.521, 49.931, 2.385, 140.886]
+duration = [0.521, 9.753900, 2.385, 19.985000]
 
 fig, ax = plt.subplots(figsize=(8, 5))
 
