@@ -10,7 +10,6 @@ Project Structure:
 ├── kokkos
 │   ├── main.cpp
 │   ├── Makefile
-│   ├── openmp_tranlate.cpp
 │   ├── README.md
 │   └── run.sh
 ├── openmp
@@ -20,14 +19,14 @@ Project Structure:
 │   └── run.sh
 ├── plot
 │   ├── compile.py
-│   ├── cuda_op.py
-│   ├── cuda.py
-│   ├── kokkos.py
-│   ├── openmp_op.py
-│   └── openmp.py
-└── README.md
+│   ├── cuda_flops.py
+│   ├── cuda_time.py
+│   ├── openmp_flops.py
+│   └── openmp_time.py
+├── README.md
+└── seminar.pdf
 ```
 
-The project aims to compare the performance of `Kokkos`, `OpenMP`, and `CUDA` implementations for matrix multiplication across different scales. The project directory consists of separate folders for each implementation, namely `kokkos`, `openmp`, and `cuda`. Each implementation contains source code files, a Makefile for compilation, a `README.md` file providing relevant information, and a `run.sh` script for executing the program.
+The project aims to compare the performance of `Kokkos`, `OpenMP`, and `CUDA` implementations for matrix multiplication across different scales. The project directory consists of separate folders for each implementation, namely `kokkos`, `openmp`, and `cuda`. Each implementation contains source code files, a Makefile for compilation, a `README.md` file providing relevant information, and a `run.sh` script to calculate the average value of the data by executing the program multiple times.
 
-The `plot` folder contains Python scripts for data visualization and analysis. These scripts include `compile.py` for compare the compile duration of different programming models, `kokkos.py` for ploting the performance of Kokkos programming running on different backend programming models, `openmp.py`, and `cuda.py` for plotting the performance non-optimized comparison between the implementations, and `openmp_op.py` and `cuda_op.py` for plotting the performance of optimized versions.
+The `plot` folder contains Python scripts for data visualization and analysis. These scripts include `compile.py` for compare the compile duration of different programming models, `openmp_flops.py`, and `cuda_flops.py` for plotting the performance comparison between the coarse- and fine-grained implementations, and `openmp_time.py` and `cuda_time.py` for plotting the execution of the programs.
