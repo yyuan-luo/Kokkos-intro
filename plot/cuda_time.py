@@ -10,14 +10,16 @@ width = 0.2
 
 fig, ax1 = plt.subplots(figsize=(8, 6))
 
-ax1.bar(np.arange(len(cuda_time)), cuda_time, width=width, label='CUDA Time Consumption (Coarse-grained)', color='#01BAEF')
-ax1.bar(np.arange(len(kokkos_time)) + width, kokkos_time, width=width, label='Kokkos Time Consumption (Coarse-grained)', color='#118AB2')
-ax1.bar(np.arange(len(cuda_time_op)) + 2 * width, cuda_time_op, width=width, label='CUDA Time Consumption (Fine-grained)', color='tab:orange')
-ax1.bar(np.arange(len(kokkos_time_op)) + 3 * width, kokkos_time_op, width=width, label='Kokkos Time Consumption (Fine-grained)', color='#DDA15E')
+ax1.bar(np.arange(len(cuda_time)), cuda_time, width=width, label='CUDA (Coarse-grained)', color='#01BAEF')
+ax1.bar(np.arange(len(kokkos_time)) + width, kokkos_time, width=width, label='Kokkos (Coarse-grained)', color='#118AB2')
+ax1.bar(np.arange(len(cuda_time_op)) + 2 * width, cuda_time_op, width=width, label='CUDA (Fine-grained)',
+        color='tab:orange')
+ax1.bar(np.arange(len(kokkos_time_op)) + 3 * width, kokkos_time_op, width=width, label='Kokkos (Fine-grained)',
+        color='#DDA15E')
 
 ax1.set_xticks(np.arange(len(cuda_time)) + 1.5 * width)
 ax1.set_xticklabels(['125*125', '1250*1250', '12500*12500'])
-ax1.set_ylabel('Time Consumption (s)')
+ax1.set_ylabel('Total Execution Time (s)')
 
 ax1.legend(loc='upper left', bbox_to_anchor=(0, 1))
 ax1.set_yscale('log')

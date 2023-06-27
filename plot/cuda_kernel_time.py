@@ -24,7 +24,7 @@ ax1.bar(np.arange(len(kokkos_kernel_time_fine)) + 3 * width, kokkos_kernel_time_
 
 ax1.set_xticks(np.arange(len(cuda_kernel_time)) + 1.5 * width)
 ax1.set_xticklabels(['125*125', '1250*1250', '12500*12500'])
-ax1.set_ylabel('Kernel Execution Time')
+ax1.set_ylabel('Kernel Execution Time (s)')
 ax1.set_yscale('log')
 
 ax1.legend(loc='upper left', bbox_to_anchor=(0, 1))
