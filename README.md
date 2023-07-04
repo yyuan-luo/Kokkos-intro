@@ -24,7 +24,8 @@ Project Structure:
 │   ├── openmp_flops.py
 │   └── openmp_time.py
 ├── README.md
-└── seminar.pdf
+├── Kokkos_Paper.pdf
+└── Kokkos_Presentation.pdf
 ```
 
 The project aims to compare the performance of `Kokkos`, `OpenMP`, and `CUDA` implementations for matrix multiplication across different scales. The project directory consists of separate folders for each implementation, namely `kokkos`, `openmp`, and `cuda`. Each implementation contains source code files, a Makefile for compilation, a `README.md` file providing relevant information, and a `run.sh` script to calculate the average value of the data by executing the program multiple times.
